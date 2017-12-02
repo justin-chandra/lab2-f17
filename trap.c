@@ -77,11 +77,20 @@ trap(struct trapframe *tf)
                     cpuid(), tf->cs, tf->eip);
             lapiceoi();
             break;
-        case T_PGFLT:
+        case T_PGFLT: ;
             // Implement this
             // check if page fault was caused by an access to the page under the current top of stack
             // if so, allocate and map the page
-            // otherwise mgo to default handler and do kernel panic
+            pde_t * pgdir = 0;
+            uint add = rcr2();
+            uint sb = myproc()->tf->esp;
+            if (add < PGROUNDDOWN(sb) && add > PGROUNDDOWN(sb) - PGSIZE) {
+                // allocate new page 
+                myproc()->pages += 1;
+                myproc()->tf->esp = allocuvm(pgdir, PGROUNDDOWN(add) - PGSIZE, sb);
+            } else {
+                cprintf("something went wrong");
+            }
             break;
 
             //PAGEBREAK: 13
