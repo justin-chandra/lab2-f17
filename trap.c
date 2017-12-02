@@ -78,35 +78,40 @@ trap(struct trapframe *tf)
             lapiceoi();
             break;
         case T_PGFLT: ;
-            // Implement this
-            // check if page fault was caused by an access to the page under the current top of stack
-            // if so, allocate and map the page
-            pde_t * pgdir = 0;
-            uint add = rcr2();
-            uint sb = myproc()->tf->esp;
-            if (add < PGROUNDDOWN(sb) && add > PGROUNDDOWN(sb) - PGSIZE) {
-                // allocate new page 
-                myproc()->pages += 1;
-                myproc()->tf->esp = allocuvm(pgdir, PGROUNDDOWN(add) - PGSIZE, sb);
-            } else {
-                cprintf("something went wrong");
-            }
-            break;
+                      // Implement this
+                      // check if page fault was caused by an access to 
+                      // the page under the current top of stack
+                      // if so, allocate and map the page
+                      pde_t * pgdir = 0;
+                      uint add = rcr2();
+                      uint sb = myproc()->tf->esp;
+                      cprintf("fault");
+                      if (add < PGROUNDDOWN(sb) && add > PGROUNDDOWN(sb) - PGSIZE) {
+                          myproc()->pages += 1;
+                          if (allocuvm(pgdir, PGROUNDDOWN(sb) - PGSIZE, PGROUNDDOWN(sb)) == 0) {
+                              panic("jlksdjlfk");
+                          }
+                          else
+                          {
+                              myproc()->tf->esp = PGROUNDDOWN(sb);
+                          }
+                      }
+                      break;
 
-            //PAGEBREAK: 13
+                      //PAGEBREAK: 13
         default:
-            if(myproc() == 0 || (tf->cs&3) == 0){
-                // In kernel, it must be our mistake.
-                cprintf("unexpected trap %d from cpu %d eip %x (cr2=0x%x)\n",
-                        tf->trapno, cpuid(), tf->eip, rcr2());
-                panic("trap");
-            }
-            // In user space, assume process misbehaved.
-            cprintf("pid %d %s: trap %d err %d on cpu %d "
-                    "eip 0x%x addr 0x%x--kill proc\n",
-                    myproc()->pid, myproc()->name, tf->trapno,
-                    tf->err, cpuid(), tf->eip, rcr2());
-            myproc()->killed = 1;
+                      if(myproc() == 0 || (tf->cs&3) == 0){
+                          // In kernel, it must be our mistake.
+                          cprintf("unexpected trap %d from cpu %d eip %x (cr2=0x%x)\n",
+                                  tf->trapno, cpuid(), tf->eip, rcr2());
+                          panic("trap");
+                      }
+                      // In user space, assume process misbehaved.
+                      cprintf("pid %d %s: trap %d err %d on cpu %d "
+                              "eip 0x%x addr 0x%x--kill proc\n",
+                              myproc()->pid, myproc()->name, tf->trapno,
+                              tf->err, cpuid(), tf->eip, rcr2());
+                      myproc()->killed = 1;
     }
 
     // Force process exit if it has been killed and is in user space.
