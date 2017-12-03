@@ -7,6 +7,10 @@ void rec() {
     b = 1;
     c = 1;
     d = 1;
+    a += 1;
+    b += 1;
+    c += 1;
+    d += 1;
     printf(1, "TEST: %d %d %d %d\n", a, b, c, d);
     rec();
 }

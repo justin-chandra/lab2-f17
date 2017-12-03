@@ -85,16 +85,15 @@ trap(struct trapframe *tf)
                       pde_t * pgdir = 0;
                       uint add = rcr2();
                       uint sb = myproc()->tf->esp;
+                      panic("fault");
                       cprintf("fault");
                       if (add < PGROUNDDOWN(sb) && add > PGROUNDDOWN(sb) - PGSIZE) {
-                          myproc()->pages += 1;
-                          if (allocuvm(pgdir, PGROUNDDOWN(sb) - PGSIZE, PGROUNDDOWN(sb)) == 0) {
-                              panic("jlksdjlfk");
-                          }
-                          else
+                          if (allocuvm(pgdir, PGROUNDUP(sb) - PGSIZE, PGROUNDDOWN(sb)) == 0)
                           {
-                              myproc()->tf->esp = PGROUNDDOWN(sb);
+                                panic("can't allocate new page");
                           }
+                          myproc()->pages += 1;
+                          myproc()->tf->esp = PGROUNDUP(sb);
                       }
                       break;
 
