@@ -20,7 +20,6 @@ int
 main(int argc, char *argv[]) {
     rec(1);
     exit();
-    return 0;
 }
 /*
 void print(){
