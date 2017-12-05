@@ -20,7 +20,7 @@ void shminit() {
   int i;
   initlock(&(shm_table.lock), "SHM lock");
   acquire(&(shm_table.lock));
-  for (i = 0; i< 64; i++) {
+  for (i = 0; i< 64; i++) { //64 pages in the shm_table
     shm_table.shm_pages[i].id =0;
     shm_table.shm_pages[i].frame =0;
     shm_table.shm_pages[i].refcnt =0;
@@ -32,7 +32,14 @@ int shm_open(int id, char **pointer) {
 //CS153 added
 //NOTE: Use the embedded spin lock to avoid race conditions.
     // MORE SPECIFICALLY: Use the same acquire and release calls that are in shm_init
-
+    int i;
+    acquire(&(shm_table.lock));
+    for (i = 0; i < 64; ++i) {
+   //   if (id == shm_table.pages[i]) {
+        cprintf("%d", shm_table.shm_pages[i]);
+   //   }
+    }
+    release(&(shm_table.lock));
 //CASE ONE: ANOTHER PROCESS CALLED SHM_OPEN BEFORE "US"
 // 1. Find the physical address of the page in the table.
 
