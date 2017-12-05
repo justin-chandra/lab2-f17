@@ -10,9 +10,9 @@
 struct {
   struct spinlock lock;
   struct shm_page {
-    uint id;
-    char *frame;
-    int refcnt;
+    uint id; // an int given by the program to specify the shared memory segment; two programs the shm_open the same id shoudl get the same physical page
+    char *frame; // a pointer to the physical frame; a pointer to the shared physical page
+    int refcnt; // the number of processes sharing the page; if the shared memory region is closed, DO NOT REMOVE the page unless NO OTHER process is sharing it
   } shm_pages[64];
 } shm_table;
 
