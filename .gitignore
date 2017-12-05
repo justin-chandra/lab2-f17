@@ -1,0 +1,13 @@
+*.o
+*.txt 
+*.dvi
+*.idx
+*.aux
+*.log
+*.ind
+*.ilg
+*.d
+*.asm
+*.sym
+*.img
+*.out
