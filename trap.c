@@ -77,6 +77,20 @@ trap(struct trapframe *tf)
             cpuid(), tf->cs, tf->eip);
     lapiceoi();
     break;
+  //CS153 -- added case
+  case T_PGFLT: ;
+    uint address = rcr2();
+    uint sp = myproc()->tf->esp; //myProcess trapframe; esp is the top of the stack
+    if (address > PGROUNDDOWN(sp) - PGSIZE && address < PGROUNDDOWN(sp)) { //give an address and it'll round down to the start of the page
+      pte_t*pgdir = myproc()->pgdir;
+      
+      if (allocuvm(pgdir, PGROUNDDOWN(sp) - PGSIZE, PGROUNDDOWN(sp)) == 0) { //checks if the allocation is valid 
+        cprintf("Oh noes! \n");
+        exit();
+      }
+      myproc()->pages += 1;
+    }
+    break;
 
   //PAGEBREAK: 13
   default:
