@@ -79,11 +79,13 @@ trap(struct trapframe *tf)
     break;
   //CS153 -- added case
   case T_PGFLT: ;
+    // pgrounddown rcr2() 
+    // >= ST - PGCOUNT * PGSIZE
     uint address = rcr2();
     uint sp = myproc()->tf->esp; //myProcess trapframe; esp is the top of the stack
     if (address > PGROUNDDOWN(sp) - PGSIZE && address < PGROUNDDOWN(sp)) { //give an address and it'll round down to the start of the page
       pte_t*pgdir = myproc()->pgdir;
-      
+      // allocuvm(pgdir, PGROOUNDDOWN(rcr2(), STACKTOP - PGCOUNT * PGSIZE
       if (allocuvm(pgdir, PGROUNDDOWN(sp) - PGSIZE, PGROUNDDOWN(sp)) == 0) { //checks if the allocation is valid 
         cprintf("Oh noes! \n");
         exit();

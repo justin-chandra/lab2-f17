@@ -337,7 +337,9 @@ copyuvm(pde_t *pgdir, uint sz, uint sp) //uint sp is STACKTOP
       goto bad;
   }
   //CS153 -- added 
-  for(i = PGROUNDDOWN(sp); i < STACKTOP; i += PGSIZE){
+  // STACKTOP - PGSIZE * PGCOUNT; i >= STACKTOP; i -= PGSIZE
+  uint c = STACKTOP - myproc()->pages * PGSIZE;
+  for (i = STACKTOP; i > c; i -= PGSIZE) {
     if((pte = walkpgdir(pgdir, (void *) i, 0)) == 0)
       panic("copyuvm: pte should exist");
     if(!(*pte & PTE_P))
@@ -347,7 +349,7 @@ copyuvm(pde_t *pgdir, uint sz, uint sp) //uint sp is STACKTOP
     if((mem = kalloc()) == 0)
       goto bad;
     memmove(mem, (char*)P2V(pa), PGSIZE);
-    if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0)
+    if(mappages(d, (void*)PGROUNDDOWN(i), PGSIZE, V2P(mem), flags) < 0)
       goto bad;
   }
 
