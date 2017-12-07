@@ -338,6 +338,7 @@ copyuvm(pde_t *pgdir, uint sz, uint sp) //uint sp is STACKTOP
   }
   //CS153 -- added 
   // STACKTOP - PGSIZE * PGCOUNT; i >= STACKTOP; i -= PGSIZE
+  // cprintf("PAGE COUNT: %s\n", myproc()->pages);
   uint c = STACKTOP - myproc()->pages * PGSIZE;
   for (i = STACKTOP; i > c; i -= PGSIZE) {
     if((pte = walkpgdir(pgdir, (void *) i, 0)) == 0)

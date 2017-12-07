@@ -80,7 +80,8 @@ trap(struct trapframe *tf)
   //CS153 -- added case
   case T_PGFLT: ;
     uint address = PGROUNDDOWN(rcr2());
-    if (address <= STACKTOP - (myproc()->pages * PGSIZE)) { //give an address and it'll round down to the start of the page
+    if (address <= STACKTOP - (myproc()->pages * PGSIZE)) { 
+        //give an address and it'll round down to the start of the page
       pte_t*pgdir = myproc()->pgdir;
       if (allocuvm(pgdir, PGROUNDDOWN(rcr2()), STACKTOP - myproc()->pages * PGSIZE) == 0) { //checks if the allocation is valid 
         cprintf("Oh noes! \n");

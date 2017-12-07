@@ -200,6 +200,8 @@ fork(void)
   np->sz = curproc->sz;
   np->parent = curproc;
   *np->tf = *curproc->tf;
+  // possibly copy the page count?
+  np->pages = curproc->pages;
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;

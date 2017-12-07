@@ -103,6 +103,7 @@ exec(char *path, char **argv)
   switchuvm(curproc);
   freevm(oldpgdir);
   curproc->pages = 1;
+  // cprintf("curproc->pages%s\n", curproc->pages);
   return 0;
 
  bad:
