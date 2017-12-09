@@ -11,9 +11,9 @@ int test(int n)
 }
 int main(int argc, char *argv[])
 {
-    int pid=0;
-    pid=fork();
-    if(pid==0){
+    int pid = 0;
+    pid = fork();
+    if(pid == 0){
         // int x=1;
         // printf(1, "address %x\n", &x);
         test(1);
