@@ -65,7 +65,10 @@ exec(char *path, char **argv)
   sz = PGROUNDUP(sz);
 
   //CS153 -- changed and added
-  if((allocuvm(pgdir, STACKTOP-PGSIZE, STACKTOP)) == 0) //changing where the stack is initialized, KERNBASE-1 is where the new stack will start, and below it, allocate one page for the new stack
+  if((allocuvm(pgdir, STACKTOP-PGSIZE, STACKTOP)) == 0) 
+      //changing where the stack is initialized, KERNBASE-1 
+      //is where the new stack will start, and below it, 
+      //allocate one page for the new stack
     goto bad;
   sp = STACKTOP;
 

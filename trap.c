@@ -85,7 +85,8 @@ trap(struct trapframe *tf)
     if (address <= s && address >=  s - PGSIZE) { 
         //give an address and it'll round down to the start of the page
       pte_t*pgdir = myproc()->pgdir;
-      if (allocuvm(pgdir, PGROUNDDOWN(rcr2()), STACKTOP - myproc()->pages * PGSIZE) == 0) { //checks if the allocation is valid 
+      if (allocuvm(pgdir, PGROUNDDOWN(rcr2()), STACKTOP - myproc()->pages * PGSIZE) == 0) { 
+          //checks if the allocation is valid 
         cprintf("Pages Allocated: %d\n", ps);
         exit();
       }
